@@ -53,7 +53,7 @@ interface BalanceWithUSD extends FormattedWalletBalance {
 
 interface Props extends BoxProps {}
 
-const filterBalancesAndPrioritize = (
+const filterBalancesWithPriority = (
   list: WalletBalance[],
   priorityMap: PriorityMap = PRIORITY,
 ): WalletBalance[] => {
@@ -112,7 +112,7 @@ const WalletPage = (props: Props) => {
 
   const formattedBalances = useMemo(() => {
     return pipe(
-      filterBalancesAndPrioritize,
+      filterBalancesWithPriority,
       sortBalances,
       formatBalances,
     )(balances);
