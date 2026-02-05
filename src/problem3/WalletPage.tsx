@@ -26,17 +26,17 @@ function pipe(...fns: Array<(arg: unknown) => unknown>) {
   return (arg: unknown) => fns.reduce((acc, fn) => fn(acc), arg);
 }
 
-type Blockchain = "Osmosis" | "Ethereum" | "Arbitrum" | "Zilliqa" | "Neo";
-
-type PriorityMap = Record<Blockchain, number>;
-
-const PRIORITY: PriorityMap = {
+const PRIORITY = {
   Osmosis: 100,
   Ethereum: 50,
   Arbitrum: 30,
   Zilliqa: 20,
   Neo: 20,
-};
+} as const;
+
+type PriorityMap = typeof PRIORITY;
+
+type Blockchain = keyof PriorityMap;
 
 interface WalletBalance {
   blockchain: Blockchain;
@@ -73,13 +73,7 @@ const sortBalances = (
   return list.sort((lhs: WalletBalance, rhs: WalletBalance) => {
     const leftPriority = priorityMap[lhs.blockchain];
     const rightPriority = priorityMap[rhs.blockchain];
-    if (leftPriority > rightPriority) {
-      return -1;
-    }
-    if (rightPriority > leftPriority) {
-      return 1;
-    }
-    return 0;
+    return rightPriority - leftPriority;
   });
 };
 
